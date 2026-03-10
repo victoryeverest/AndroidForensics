@@ -1,564 +1,284 @@
-<h1 align="center">
-🕵️‍♂️ AndroidForensics
-</h1>
+# AndroidForensics Enhanced
 
-<p align="center">
-  <img src="https://github.com/DouglasFreshHabian/AndroidForensics/blob/main/Assets/Droid-Detective.png" alt="Android Forensics Logo" width="400">
-</p>
+## 🕵️‍♂️ Advanced Android Device Forensic Toolkit
 
-<h1 align="center">
-Android Device Forensics: A Practical ADB Guide 🔍
-</h1>
-
-The **AndroidForensics** project is a practical guide and toolkit for extracting digital artifacts from Android devices using **ADB (Android Debug Bridge)** commands. Whether you’re an investigator, researcher, or security enthusiast, this repo walks you through the process of gathering system and app-level data safely, transparently, and reproducibly, using a non-rooted device running Android.
+An enhanced version of the [AndroidForensics](https://github.com/DouglasFreshHabian/AndroidForensics) project by Douglas Habian (Fresh Forensics), with additional forensic capabilities, export formats, and analysis tools.
 
 ---
 
-### ⚙️ Prerequisites
+## 🆕 Enhancements Over Original
 
-Before you begin, ensure you have:
+| Feature | Original | Enhanced |
+|---------|----------|----------|
+| Error Handling | Basic | Comprehensive with device selection |
+| Output Formats | TXT only | TXT, CSV, JSON |
+| Hash Verification | ❌ | ✅ SHA-256 + MD5 |
+| Case ID Tracking | ❌ | ✅ Full case management |
+| WiFi Passwords | ❌ | ✅ Attempted extraction |
+| Browser History | ❌ | ✅ Chrome + default browser |
+| Timeline Analysis | ❌ | ✅ Chronological event mapping |
+| SIM Extraction | ❌ | ✅ Via ADB and USB reader |
+| Network ADB Scan | ❌ | ✅ Auto-discovery |
+| Forensic Report | ❌ | ✅ Professional report generation |
+| Extraction Types | Single | full, quick, user, system |
 
-* **ADB installed** on your system:
-  ```bash
-  sudo apt install adb -y
-  ```
 ---
-* **USB debugging enabled** on the target Android device.
-* Proper authorization (legal and ethical) to access and analyze the device.
+
+## 📁 Project Structure
+
+```
+AndroidForensics_Enhanced/
+├── README.md
+└── scripts/
+    ├── enhanced_extract.sh      # Main extraction tool
+    ├── airscope_enhanced.sh     # WiFi radar
+    ├── sim_extractor.sh         # SIM card forensics
+    └── timeline_analyzer.sh     # Event timeline generator
+```
 
 ---
 
-### 1. **Verify ADB Connection** 🔌
+## ⚙️ Prerequisites
 
-Ensure your device is connected and recognized:
+### Required
+```bash
+# ADB
+sudo apt install android-tools-adb android-tools-fastboot
+
+# Python (for some features)
+sudo apt install python3 python3-pip
+```
+
+### Optional
+```bash
+# SIM card extraction
+sudo apt install pcscd pcsc-tools
+pip install pySim
+
+# Network scanning
+sudo apt install nmap netcat
+```
+
+---
+
+## 🚀 Quick Start
+
+### Basic Extraction
+```bash
+chmod +x scripts/*.sh
+./scripts/enhanced_extract.sh
+```
+
+### With Options
+```bash
+# Specify case ID and device
+./scripts/enhanced_extract.sh -c CASE_2025_001 -d RZ8N1234XYZ
+
+# Quick extraction (device info + user data only)
+./scripts/enhanced_extract.sh -t quick
+
+# Include WiFi password extraction
+./scripts/enhanced_extract.sh -w
+
+# Scan for network ADB devices
+./scripts/enhanced_extract.sh -n
+```
+
+### WiFi Scanning
+```bash
+./scripts/airscope_enhanced.sh
+```
+
+### SIM Card Extraction
+```bash
+./scripts/sim_extractor.sh
+```
+
+### Timeline Analysis
+```bash
+# Auto-detect most recent extraction
+./scripts/timeline_analyzer.sh
+
+# Specify input directory
+./scripts/timeline_analyzer.sh -i ./forensic_output/CASE_2025_001
+```
+
+---
+
+## 📋 Extraction Types
+
+| Type | Description | Duration |
+|------|-------------|----------|
+| `full` | Complete extraction (default) | 2-5 min |
+| `quick` | Device info + user data | 30-60 sec |
+| `user` | User data + apps + browser | 1-2 min |
+| `system` | System diagnostics + security | 1-2 min |
+
+---
+
+## 📂 Output Structure
+
+```
+forensic_output/CASE_ID/
+├── raw/                    # Raw extraction files
+│   ├── device_info.txt
+│   ├── contacts.txt
+│   ├── call_logs.txt
+│   ├── sms.txt
+│   ├── wifi_config.txt
+│   └── ...
+├── csv/                    # CSV exports
+│   ├── contacts.csv
+│   ├── call_logs.csv
+│   └── packages.csv
+├── json/                   # JSON exports
+│   ├── device_info.json
+│   ├── emails.json
+│   └── packages.json
+├── reports/                # Forensic reports
+│   ├── FORENSIC_REPORT.txt
+│   └── integrity_hashes.txt
+└── logs/                   # Execution logs
+```
+
+---
+
+## 🔐 Data Extracted
+
+### Device Information
+- Model, manufacturer, serial number
+- Android version, API level, build fingerprint
+- IMEI, phone number
+- Uptime, battery status
+
+### User Data
+- Contacts (names + numbers)
+- Call logs (incoming/outgoing/missed)
+- SMS messages
+- Calendar events
+- Registered accounts
+- Email addresses
+
+### Applications
+- All installed packages
+- Third-party packages
+- Running services
+- Recent tasks
+- Usage statistics
+
+### Network
+- WiFi configuration & scan results
+- Network interfaces
+- Connectivity status
+- Bluetooth paired devices
+- DNS configuration
+
+### Browser Data
+- Chrome history (if accessible)
+- Default browser history
+- Bookmarks
+- Download history
+
+### System
+- System logs (logcat)
+- Memory information
+- Battery statistics
+- Location history
+- Notifications
+- Sensors
+
+### Security
+- Lock screen settings
+- Fingerprint configuration
+- Trust agents (Smart Lock)
+- Device administrators
+- Certificates
+
+### Hidden
+- Android secret codes
+- Clipboard contents
+- Alarm history
+
+---
+
+## 📊 Timeline Analysis
+
+The timeline analyzer creates a chronological map of device activity:
+
+```
+2025-01-15 08:30:22|SMS    |Sent        |+1234567890|Hey, how are you?
+2025-01-15 09:15:03|CALL   |Incoming    |+1987654321|Duration: 120s
+2025-01-15 10:22:45|NOTIF  |WhatsApp    |New message|
+2025-01-15 11:30:00|USAGE  |com.instagram|App used|
+2025-01-15 14:22:11|LOC    |GPS         |40.7128,-74.0060|
+```
+
+---
+
+## 🔒 Integrity Verification
+
+All extracted files include cryptographic hashes:
 
 ```bash
-adb devices
-```
+# Verify integrity
+sha256sum -c reports/integrity_hashes.txt
 
-Example output:
-
-```
-List of devices attached
-RZ8N1234XYZ	device
+# View hashes
+cat reports/integrity_hashes.txt
 ```
 
 ---
 
-### 2. **Gather Basic System Info** 🧠
+## 📝 Forensic Report
 
-Pull general information about the device and system state:
+Each extraction generates a professional forensic report including:
 
-```bash
-adb shell getprop
-```
-
-Or, for specific properties:
-
-```bash
-adb shell getprop ro.product.model
-adb shell getprop ro.build.version.release
-adb shell getprop ro.serialno
-```
-
-This gives insight into the **model**, **OS version**, and **serial number** — essential for report documentation.
+- Case information
+- Device identification
+- Extraction manifest
+- Chain of custody section
+- Integrity verification
+- Legal notice
 
 ---
 
-### 3. **Retrieve Installed Applications** 📱
+## ⚖️ Legal Notice
 
-List all installed apps and their installation paths:
+This toolkit is for **authorized forensic investigations only**.
 
-```bash
-adb shell pm list packages -f
-```
-
-To export this list for analysis:
-
-```bash
-adb shell pm list packages -f > installed_apps.txt
-```
+- Ensure compliance with local laws
+- Obtain proper authorization before extraction
+- Handle extracted data securely
+- Maintain chain of custody
+- Document all actions
 
 ---
 
-### 4. **Collect System Logs** 📋
+## 🤝 Credits
 
-Grab real-time logs from the device:
-
-```bash
-adb logcat -d > system_logs.txt
-```
-
-This file can contain crash traces, app activity, network events, and more — valuable for timeline reconstruction.
+- **Original Project**: [AndroidForensics](https://github.com/DouglasFreshHabian/AndroidForensics) by Douglas Habian (Fresh Forensics, LLC)
+- **Enhanced Version**: Community contributions
 
 ---
 
-### 5. **Extract Battery & Power Data** 🔋
+## 📜 License
 
-Gather device power metrics:
-
-```bash
-adb shell dumpsys battery
-```
-
-Example output:
-
-```
-AC powered: false
-USB powered: true
-level: 84
-temperature: 290
-```
+MIT License - See LICENSE file for details.
 
 ---
 
-### 6. **Dump Network Info** 🌐
+## 📧 Contact
 
-Collect network configuration and connection details:
+- Original Author: Douglas Habian (freshforensicsllc@tuta.com)
+- GitHub: github.com/DouglasFreshHabian
 
-```bash
-adb shell dumpsys connectivity
-adb shell ifconfig
-adb shell netstat
-```
+- Victory: wifieast@gmail.com
+- GitHub: https://github.com/victoryeverest/
 
 ---
 
-### 7. **Pull Specific Directories or Files** 🧾
+## 🙏 Support the Original Author
 
-Forensic acquisition of accessible directories:
+If this tool helps your investigations, consider supporting continued development:
 
-```bash
-adb pull /sdcard/DCIM ./Android_Images
-adb pull /sdcard/Download ./Downloads
-adb pull /data/system/packages.list ./Package_List
-```
-
-> ⚠️ Note: Access to `/data` directories may require root or forensic-mode images.
-
----
-
-### 8. **Device Timeline and Activity Data** ⏰
-
-Gather system usage and history:
-
-```bash
-adb shell dumpsys usagestats
-adb shell dumpsys batterystats
-adb shell settings list system
-```
-
-This helps reconstruct user behavior and system-level changes over time.
-
----
-
-Excellent — you’re now documenting the **user-data extraction portion** of your ADB forensic workflow.
-Let’s make this section polished, consistent with the rest of your README, and include short explanations, file-saving commands, and modern syntax notes.
-
-Here’s a **ready-to-paste Markdown section** you can add under your “Device Timeline and Activity Data” block:
-
----
-
-### 9. **Extract Accounts, Contacts, Calls, and Messages** 📞
-
-These commands use Android’s **content providers** and **system services** to enumerate user accounts and communication data available via ADB.
-Results are saved locally for later review.
-
-> ⚠️ On Android 11 and higher, access to contacts, call logs, and SMS via `adb shell content` may be restricted unless the device is rooted or a special forensic build is used.
-
----
-
-#### 🔹 **List All Applications You Have Accounts On**
-
-```bash
-adb shell dumpsys account|grep -i com.*$ -o|cut -d' ' -f1|cut -d} -f1|grep -v com$
-```
-
-Lists all app package names that have registered accounts on the device.
-
----
-
-#### 🔹 **List Email Addresses Registered on the Device**
-
-```bash
-adb shell dumpsys | grep -E -o "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b"
-```
-
-Extracts every detected email address from the Account Manager service.
-
----
-
-#### 🔹 **Count Number of Device Reboots**
-
-```bash
-adb shell settings list global|grep "boot_count="|cut -d= -f2|head -n 1|xargs echo "Booted:"|sed 's/$/ times/g'
-```
-
-Retrieves the device boot counter from global system settings.
-
----
-
-#### 🔹 **List Every Contact and Phone Number**
-
-```bash
-adb shell content query --uri content://contacts/phones/ --projection display_name:number | cut -f 3- -d " "
-```
-
-Shows all stored contact names and phone numbers.
-
----
-
-#### 🔹 **Extract All Contact Info**
-
-```bash
-adb shell content query --uri content://contacts/phones/ 
-```
-
-Lists raw contact provider data for quick inspection.
-
----
-
-#### 🔹 **Dump Call Log**
-
-```bash
-adb shell content query --uri content://call_log/calls 
-```
-
-Retrieves call history entries including number, type, and timestamp.
-
----
-
-#### 🔹 **Dump SMS Messages**
-
-```bash
-adb shell content query --uri content://sms/ 
-```
-
-Exports SMS database contents such as address, date, and body.
-Output → **`sms.txt`**
-
----
-
-### 📑 Notes
-
-* Always document the **Android version** and **collection timestamp** alongside the exported files.
-* Data volume can be large; redirect outputs to files as shown to preserve formatting.
-* On newer Android releases, you may need **root**, **developer-build access**, or **special forensic images** for complete results.
-
----
-
-### 🧩 Included Scripts
-
-This repo includes two Bash utilities to automate and standardize your data extraction workflow:
-
-#### **`extract.sh`**
-
-<details>
-<summary>🖱 Click to Expand</summary>
-
-Excellent — this is a **much more advanced version** of your earlier ADB script. It not only gathers system diagnostics but also extracts **user-level data** (contacts, call logs, SMS, accounts). Let’s go through what it does in detail and then pick a fitting name.
-
----
-
-## 🧩 **What This Script Does**
-
-This Bash script performs an **automated ADB-based forensic data and diagnostics extraction** from a connected Android device.
-It’s designed for **system analysis, auditing, or incident response** — collecting both **system snapshots** and **select user-accessible data** in a single organized run.
-
----
-
-### 🔧 **Step-by-Step Overview**
-
-#### **1. Environment & Device Setup**
-
-* Checks that `adb` (Android Debug Bridge) is installed.
-* Starts the ADB server silently.
-* Detects a connected Android device (`adb devices`).
-* Exits if no authorized device is found.
-* Displays the connected device ID.
-
-#### **2. Creates a Timestamped Output Folder**
-
-Example:
-
-```
-ADB_Report_20251025_163200/
-```
-
-All collected data is stored here, one file per command.
-
----
-
-### 📋 **3. Core Function — `run_adb_command`**
-
-A helper that:
-
-* Displays a colorized header describing the task.
-* Runs the given ADB command.
-* Saves output to a specified filename.
-* Optionally runs “silent” tasks (no console output, for noisy commands).
-
----
-
-### 🧠 **4. Data Collected**
-
-#### 📱 **Device & System Information**
-
-| Category     | Description                                  | Command                                             |
-| ------------ | -------------------------------------------- | --------------------------------------------------- |
-| Basic Info   | Model, manufacturer, Android version, serial | `getprop ...`                                       |
-| Device State | Uptime, battery, and connectivity            | `uptime`, `dumpsys battery`, `dumpsys connectivity` |
-| Network Info | Interface config                             | `ifconfig` or `ip addr show`                        |
-
----
-
-#### 👤 **User & App Data Extraction**
-
-| Data                   | Description                      | Command                                          |
-| ---------------------- | -------------------------------- | ------------------------------------------------ |
-| **Accounts**           | Extracts account package names   | `dumpsys account`                                |
-| **Email addresses**    | Extracts email strings via regex | `dumpsys account`                                |
-| **Reboot count**       | Reads global boot counter        | `settings list global`                           |
-| **Contacts**           | Lists contacts and phone numbers | `content query --uri content://contacts/phones/` |
-| **Call logs**          | Queries system call history      | `content query --uri content://call_log/calls`   |
-| **SMS messages**       | Dumps all SMS database entries   | `content query --uri content://sms/`             |
-| **Installed packages** | Lists all and third-party apps   | `pm list packages`                               |
-| **Running services**   | Dumps currently active services  | `dumpsys -l`                                     |
-
-> ⚠️ These use Android’s public **content providers**, meaning some data may not be available on modern devices (Android 11+ restricts SMS, contacts, etc. access via ADB unless rooted or with specific permissions).
-
----
-
-#### ⚙️ **5. System Diagnostics**
-
-* **`logcat` snapshot:** Captures last ~1000 lines of logs.
-* **`bugreport`:** Generates a full system report in the background (`.zip` or `.txt`), allowing the user to continue using the script while it completes.
-
----
-
-### 📊 **6. Final Summary**
-
-* Prints a color-coded summary table showing all collected files and their sizes.
-* Displays total runtime (excluding background bugreport).
-* Reminds the user that the bugreport will appear when finished.
-
-Example:
-
-```
-[✓] All ADB data extraction commands executed successfully!
-Summary of extracted files:
-device_info.txt         4.2K
-emails.txt              1.1K
-contacts.txt            32K
-sms.txt                 80K
--------------------------------------------
-Results saved in: ADB_Report_20251025_163200
-Total runtime: 42s
-[i] Bugreport is running in the background...
-```
-
----
-
-## ⚙️ **Use Cases**
-
-This script is suitable for:
-
-* **Incident response or forensic triage**
-* **Device auditing before handoff**
-* **Support or QA data collection**
-* **Security analysis / compliance snapshots**
-
-It collects:
-
-* **System state**
-* **Network and battery info**
-* **App lists**
-* **User-level communications data (where permitted)**
-* **Logs and bugreport**
-
----
-
-## ⚠️ **Cautions / Limitations**
-
-* Access to **SMS, call logs, and contacts** may be blocked on newer Android versions (especially Android 11+).
-* Should only be used on devices you **own or have explicit consent** to examine.
-* Data collected may contain **personally identifiable information** — handle securely.
-
----
-
-</details>
-
-#### **`dumpsys.sh`**
-
-<details>
-<summary>🖱 Click to Expand</summary>
-
-## 🧩 **What the `dumpsys.sh` Script Does**
-
-This Bash script is an **automated Android diagnostics collector**.
-It connects to an Android device over **ADB (Android Debug Bridge)** and runs a series of **`dumpsys` commands** — each targeting a key Android system service — then saves their outputs into organized text files.
-
-Here’s what happens step by step:
-
----
-
-### 🧱 **1. Setup & Environment Checks**
-
-* Checks that the `adb` tool is installed and accessible in your system `PATH`.
-* Starts the ADB server if it’s not already running.
-* Waits up to **30 seconds (10 retries × 3s)** for an Android device to be connected and authorized.
-* Accepts an optional **device serial** as an argument (useful if multiple devices are connected).
-
----
-
-### 📂 **2. Creates a Timestamped Report Directory**
-
-Creates an output folder such as:
-
-```
-DumpSysReport_20251025_153000/
-```
-
-All command outputs are saved in this directory, each to its own `.txt` file.
-
----
-
-### ⚙️ **3. Runs a Series of System Commands via ADB**
-
-It loops through a predefined list of **21 `dumpsys` services**, including:
-
-| Command                       | Purpose                          |
-| ----------------------------- | -------------------------------- |
-| `dumpsys meminfo`             | Memory usage                     |
-| `dumpsys media.audio_flinger` | Audio playback internals         |
-| `dumpsys sensorservice`       | Sensor (motion/environment) data |
-| `dumpsys adb`                 | ADB subsystem info               |
-| `dumpsys account`             | Accounts and sync services       |
-| `dumpsys fingerprint`         | Fingerprint authentication info  |
-| `dumpsys netstats`            | Network usage statistics         |
-| `dumpsys power`               | Power manager and wake locks     |
-| `dumpsys location`            | GPS and location services        |
-| `dumpsys notification`        | Notification history             |
-| `dumpsys telecom`             | Telephony/call data              |
-| `dumpsys wifi`                | Wi-Fi state/history              |
-| ...and more                   |                                  |
-
-Each command’s output is:
-
-* Displayed live in the terminal (`tee`)
-* Saved to a corresponding file (e.g., `wifi.txt`, `meminfo.txt`)
-
-If a command fails, it’s logged as failed — otherwise marked as succeeded.
-
----
-
-### 📊 **4. Generates a Summary**
-
-At the end, it prints a color-coded summary:
-
-```
-Succeeded Commands: 20
- ✔ dumpsys meminfo
- ✔ dumpsys wifi
- ...
-
-Failed Commands: 1
- ✖ dumpsys clipboard
-
-All outputs saved in DumpSysReport_20251025_153000
-```
-
----
-
-## 🧠 **Purpose / Use Case**
-
-This script is ideal for:
-
-* **Developers** gathering system state for debugging.
-* **QA engineers** doing regression tests or bug triage.
-* **Forensic analysts** collecting non-user diagnostic data.
-* **Tech support** capturing structured device reports.
-
-It’s non-invasive — it **does not pull user files (photos, downloads, etc.)** — only system service states available via ADB.
-
----
-
-</details>
-
----
-
-### 🔧 How to Use
-
-1. Clone the repo:
-
-   ```bash
-   git clone https://github.com/DouglasFreshHabian/AndroidForensics.git
-   cd AndroidForensics
-   ```
-
-2. Make the scripts executable:
-
-   ```bash
-   chmod +x extract.sh dumpsys.sh
-   ```
-
-3. Run the `extract.sh` script:
-
-   ```bash
-   ./extract.sh
-   ```
-
-4. Run the `dumpsys.sh` script:
-
-   ```bash
-   ./dumpsys.sh
-   ```
-
----
-
-### 🧱 Directory Structure
-
-```
-AndroidForensics/
-├── extract.sh
-├── dumpsys.sh
-├── Assets/
-│   └── Droid-Detective.png
-├── outputs/
-│   ├── ADB_Report_20251025_005650/
-│   └── DumpSysReport_20251024_171220/
-└── README.md
-```
-
----
-
-### ⚖️ Legal & Ethical Notice
-
-This toolkit is for **authorized forensic analysis only**.
-Ensure compliance with local laws and privacy regulations. Unauthorized data extraction may violate legal boundaries.
-
----
-
-### 💬 Feedback & Contributions
-
-If you have ideas, want to add new ADB command modules, or improve automation — open an issue or submit a pull request!
-Let’s build an open, transparent, and responsible forensic community.
-
----
-
-### ☕ Support This Project
-
-If **AndroidForensics™** helps your investigations, consider supporting continued development:
-
-<p align="center">
-  <a href="https://www.buymeacoffee.com/dfreshZ" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
-</p>
-
----
-
-<!-- 
-    Fresh Forensics, LLC | Douglas Fresh Habian | 2025
-    github.com/DouglasFreshHabian
-    freshforensicsllc@tuta.com
--->
-
+[Buy Me A Coffee](https://www.buymeacoffee.com/dfreshZ)
